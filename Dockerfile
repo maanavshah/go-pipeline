@@ -1,14 +1,12 @@
 # Use the pushed "broken" arm64 image (actually amd64)
-FROM maanavharness/python:3.9-slim-retagged-arm64
+FROM ebtasamfaridy/python:3.9-slim-linux-arm64
 
-# Add Maintainer Info
-# LABEL maintainer="Community Engineering Team <community-engg@harness.io.>"
-# Copy the Go binary into the image. The Go binary must be
-# statically compiled with CGO disabled. Use the following
-# build command:
-#
-#   CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -tags netgo
-#
-ADD go-sample-app /bin/
-# Command to run the executable
-ENTRYPOINT ["/bin/go-sample-app"]
+WORKDIR /app
+
+COPY app.py .
+
+# This RUN will trigger QEMU / ELF failure on arm64 hosts
+RUN echo "Testing broken base image"
+
+# Use the -u flag to force stdout/stderr unbuffered
+CMD ["python", "-u", "app.py"]
